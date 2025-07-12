@@ -1,7 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Net.Http;
 using System.Threading.Tasks;
-using VisionHub.Api.Models.Camera;
+using VisionHub.Api.Models.Cameras;
 
 namespace VisionHub.Api.Controllers
 {

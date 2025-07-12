@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Http.Json;
 using VisionHub.Api.Constants;
-using VisionHub.Api.Models.Camera;
+using VisionHub.Api.Models.Cameras;
 
 namespace VisionHub.Api.Controllers
 {

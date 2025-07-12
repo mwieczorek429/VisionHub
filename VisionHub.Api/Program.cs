@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using VisionHub.Api.Data;
-using VisionHub.Api.Models.Camera;
+using VisionHub.Api.Models.Cameras;
 using VisionHub.Api.Services;
 
 var builder = WebApplication.CreateBuilder(args);

@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using VisionHub.Api.Models.Camera;
+using VisionHub.Api.Models.Cameras;
 
 namespace VisionHub.Api.Data.Configurations
 {
@@ -14,6 +14,11 @@ namespace VisionHub.Api.Data.Configurations
                 .WithOne(ce => ce.Camera)
                 .HasForeignKey(ce => ce.CameraId)
                 .OnDelete(DeleteBehavior.NoAction);
+
+            builder.HasOne(c => c.AppUser)
+                   .WithMany(u => u.Cameras)
+                   .HasForeignKey(c => c.AppUserId)
+                   .OnDelete(DeleteBehavior.Cascade);
         }
     }
 }

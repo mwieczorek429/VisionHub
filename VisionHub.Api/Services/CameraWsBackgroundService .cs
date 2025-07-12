@@ -1,7 +1,7 @@
 ﻿using System.Net.WebSockets;
 using System.Text;
 using System.Text.Json;
-using VisionHub.Api.Models.Camera;
+using VisionHub.Api.Models.Cameras;
 
 
 namespace VisionHub.Api.Services;

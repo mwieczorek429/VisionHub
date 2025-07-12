@@ -1,7 +1,7 @@
 ﻿
 using VisionHub.Api.Data;
 
-namespace VisionHub.Api.Models.Camera
+namespace VisionHub.Api.Models.Cameras
 {
     public class EFCameraRepository : ICameraRepository
     {

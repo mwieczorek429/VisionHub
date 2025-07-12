@@ -1,6 +1,6 @@
 ﻿using Azure.Core;
 using VisionHub.Api.Constants;
-using VisionHub.Api.Models.Camera;
+using VisionHub.Api.Models.Cameras;
 
 namespace VisionHub.Api.Services
 {

@@ -1,4 +1,6 @@
-﻿namespace VisionHub.Api.Models.Camera
+﻿using VisionHub.Api.Models.Auth;
+
+namespace VisionHub.Api.Models.Cameras
 {
     public class Camera
     {
@@ -9,5 +11,8 @@
         public string Token { get; set; }
         public string Url { get; set; }
         public ICollection<CameraEvent>? CameraEvents { get; set; }
+
+        public int AppUserId { get; set; }
+        public AppUser AppUser { get; set; } = null!;
     }
 }

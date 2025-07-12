@@ -1,6 +1,6 @@
 ﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
-using VisionHub.Api.Models.Camera;
+using VisionHub.Api.Models.Cameras;
 
 namespace VisionHub.Api.Data.Configurations
 {
