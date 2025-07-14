@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using System.Net.Http;
 using System.Threading.Tasks;
 using VisionHub.Api.Models.Cameras;
@@ -18,6 +19,7 @@ namespace VisionHub.Api.Controllers
             _httpClientFactory = httpClientFactory;
         }
 
+        [Authorize]
         [HttpGet]
         public async Task<IActionResult> GetHealthStatus()
         {

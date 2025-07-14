@@ -1,12 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
 using System.Net.Http.Json;
+using System.Security.Claims;
 using VisionHub.Api.Constants;
 using VisionHub.Api.Models.Cameras;
 
 namespace VisionHub.Api.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
     public class CameraController : ControllerBase
@@ -35,31 +38,44 @@ namespace VisionHub.Api.Controllers
         }
 
         [HttpPost]
-        public async Task<CameraTokenResponseDto?> AddCamera([FromBody] CameraAddRequestDto request)
+        public async Task<IActionResult> AddCamera([FromBody] CameraAddRequestDto request)
         {
+            var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            if (!int.TryParse(userIdStr, out int userId))
+            {
+                return Unauthorized(); 
+            }
+
             var response = await _httpClient.PostAsJsonAsync(request.CameraUrl + MdcsApiEndpoints.Login, new CameraLoginRequestDto
             {
                 Login = request.Login,
                 Password = request.Password,
             });
-            
-            if (response.IsSuccessStatusCode)
-            {
-                var result = await response.Content.ReadFromJsonAsync<CameraTokenResponseDto>();
-                _cameraRepository.AddCamera(new Camera
-                {
-                    Login = request.Login,
-                    Password = request.Password,
-                    Name = "Kamera",
-                    Token = result.Token,
-                    Url = request.CameraUrl
-                });
 
-                return result;
+            if (!response.IsSuccessStatusCode)
+            {
+                return BadRequest("Logowanie do kamery się nie powiodło");
             }
 
-            return null;
+            var result = await response.Content.ReadFromJsonAsync<CameraTokenResponseDto>();
+            if (result is null)
+            {
+                return StatusCode(500, "Nie udało się odczytać tokena z odpowiedzi.");
+            }
+
+            _cameraRepository.AddCamera(new Camera
+            {
+                Login = request.Login,
+                Password = request.Password,
+                Name = "Kamera",
+                Token = result.Token,
+                Url = request.CameraUrl,
+                AppUserId = userId
+            });
+
+            return Ok(result);
         }
+
 
         [HttpPatch("{cameraId}")]
         public async Task<IActionResult> EditCameraCredentials(int cameraId, [FromBody]CameraCredentialsDto credentialsDto)

@@ -11,7 +11,6 @@ namespace VisionHub.Api.Models.Cameras
         public string Token { get; set; }
         public string Url { get; set; }
         public ICollection<CameraEvent>? CameraEvents { get; set; }
-
         public int AppUserId { get; set; }
         public AppUser AppUser { get; set; } = null!;
     }
