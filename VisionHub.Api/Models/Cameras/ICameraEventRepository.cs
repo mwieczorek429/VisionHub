@@ -3,10 +3,10 @@
     public interface ICameraEventRepository
     {
         IQueryable<CameraEvent> CameraEvents { get; }
-        Task<IEnumerable<CameraEvent>> GetCameraEventsAsync(int cameraId);
+        Task<IEnumerable<CameraEventWithCameraIdDto>> GetCameraEventsAsync();
         Task<IEnumerable<CameraEvent>> GetCameraEventsAsync(DateTimeOffset from, DateTimeOffset to);
         Task<IEnumerable<CameraEvent>> GetCameraEventsAsync(DateTimeOffset from, DateTimeOffset to, int cameraId);
-        Task<CameraEvent>GetLastCameraEventAsync(int cameraId);
+        Task<CameraEventWithCameraIdDto> GetLastCameraEventAsync();
         Task AddCameraEventAsync(CameraEvent cameraEvent);
 
     }

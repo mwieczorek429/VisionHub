@@ -23,7 +23,17 @@ namespace VisionHub.Api.Controllers
             _configuration = configuration;
         }
 
+        /// <summary>
+        /// Registers a new user.
+        /// </summary>
+        /// <param name="request">Registration data including login and password.</param>
+        /// <returns>
+        /// 200 OK if registration is successful.  
+        /// 400 BadRequest if the user already exists.
+        /// </returns>
         [HttpPost("register")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
         public async Task<IActionResult> Register(RegisterRequestDto request)
         {
             if (await _userRepository.UserExistsAsync(request.Login))
@@ -40,7 +50,17 @@ namespace VisionHub.Api.Controllers
             return Ok("User registered successfully.");
         }
 
+        /// <summary>
+        /// Authenticates the user and returns a JWT token.
+        /// </summary>
+        /// <param name="request">Login credentials (login and password).</param>
+        /// <returns>
+        /// 200 OK with JWT token if credentials are valid.  
+        /// 401 Unauthorized if credentials are invalid.
+        /// </returns>
         [HttpPost("login")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
         public async Task<IActionResult> Login(LoginRequestDto request)
         {
             var user = await _userRepository.GetByLoginAsync(request.Login);
@@ -53,6 +73,11 @@ namespace VisionHub.Api.Controllers
             return Ok(new { token });
         }
 
+        /// <summary>
+        /// Generates a JWT token for the specified user.
+        /// </summary>
+        /// <param name="user">Authenticated user object.</param>
+        /// <returns>JWT token string.</returns>
         private string GenerateJwtToken(AppUser user)
         {
             var claims = new[]
@@ -73,8 +98,22 @@ namespace VisionHub.Api.Controllers
             return new JwtSecurityTokenHandler().WriteToken(token);
         }
 
+        /// <summary>
+        /// Changes the password of the currently authenticated user.
+        /// </summary>
+        /// <param name="request">Current and new password.</param>
+        /// <returns>
+        /// 200 OK if the password is changed successfully.  
+        /// 400 BadRequest if the current password is incorrect.  
+        /// 401 Unauthorized if the user is not authenticated.  
+        /// 404 NotFound if the user doesn't exist.
+        /// </returns>
         [Authorize]
         [HttpPost("change-password")]
+        [ProducesResponseType(StatusCodes.Status200OK)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
         public async Task<IActionResult> ChangePassword(ChangePasswordRequestDto request)
         {
             var userIdStr = User.FindFirstValue(ClaimTypes.NameIdentifier);

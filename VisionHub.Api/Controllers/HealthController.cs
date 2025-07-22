@@ -6,6 +6,9 @@ using VisionHub.Api.Models.Cameras;
 
 namespace VisionHub.Api.Controllers
 {
+    /// <summary>
+    /// Controller for checking the health status of the application and connected cameras.
+    /// </summary>
     [Route("api/[controller]")]
     [ApiController]
     public class HealthController : ControllerBase
@@ -19,8 +22,21 @@ namespace VisionHub.Api.Controllers
             _httpClientFactory = httpClientFactory;
         }
 
+        /// <summary>
+        /// Checks the health status of the database connection and all registered cameras.
+        /// </summary>
+        /// <remarks>
+        /// This endpoint verifies the connection to the database and attempts to reach each camera's status endpoint using their respective tokens.
+        /// </remarks>
+        /// <returns>
+        /// A status object containing:
+        /// - `DatabaseConnected`: Indicates whether the database connection is active.
+        /// - `CameraConnections`: A list of cameras with their individual connectivity status.
+        /// </returns>
+        /// <response code="200">Returns the health status of the system and cameras.</response>
         [Authorize]
         [HttpGet]
+        [ProducesResponseType(StatusCodes.Status200OK)]
         public async Task<IActionResult> GetHealthStatus()
         {
             var dbConnected = _cameraRepository.CanConnect();

@@ -29,7 +29,7 @@ namespace VisionHub.Api.Services
         public async Task UpdateTokenAsync(Camera camera)
         {
             camera.Token = await GetNewTokenAsync(camera);
-            await _cameraRepository.UpdateCameraAsync(camera);
+            await _cameraRepository.UpdateCameraFromBackgroundAsync(camera);
         }
     }
 }

@@ -1,10 +1,8 @@
 ﻿namespace VisionHub.Api.Models.Cameras
 {
-    public class CameraCredentialsDto
+    public class CameraCredentialsDto : CameraCredentialsPayloadDto
     {
-        public string CurrentLogin { get; set; }
-        public string CurrentPassword { get; set; }
-        public string NewLogin { get; set; }
-        public string NewPassword { get; set; }
+        public string CameraName {  get; set; }
+        public string CameraUrl { get; set; }
     }
 }
