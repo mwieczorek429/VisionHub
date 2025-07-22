@@ -74,9 +74,15 @@ builder.Services.AddSwaggerGen(c =>
             new List<string>()
         }
     });
+
+    var xmlFile = $"{System.Reflection.Assembly.GetExecutingAssembly().GetName().Name}.xml";
+    var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
+    c.IncludeXmlComments(xmlPath);
 });
 
+builder.Services.AddHttpContextAccessor();
 builder.Services.AddHttpClient();
+builder.Services.AddScoped<IAppUserContextService,  AppUserContextService>();
 
 builder.Services.AddHostedService<CameraWsBackgroundService>();
 

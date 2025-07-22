@@ -1,16 +1,19 @@
 ﻿
 using Microsoft.EntityFrameworkCore;
 using VisionHub.Api.Data;
+using VisionHub.Api.Services;
 
 namespace VisionHub.Api.Models.Cameras
 {
     public class EFCameraEventRepository : ICameraEventRepository
     {
         private readonly ApplicationDbContext _context;
+        private readonly IAppUserContextService? _userContext;
 
-        public EFCameraEventRepository(ApplicationDbContext context) 
+        public EFCameraEventRepository(ApplicationDbContext context, IAppUserContextService userContext) 
         {
             _context = context;
+            _userContext = userContext;
         }
 
         public IQueryable<CameraEvent> CameraEvents => _context.CameraEvents;
@@ -21,11 +24,30 @@ namespace VisionHub.Api.Models.Cameras
             await _context.SaveChangesAsync();
         }
 
-        public async Task<IEnumerable<CameraEvent>> GetCameraEventsAsync(int cameraId)
+        public async Task<IEnumerable<CameraEventWithCameraIdDto>> GetCameraEventsAsync()
         {
-            return await CameraEvents
-                .Where(e => e.CameraId == cameraId)
+            var userCameraIds = await _context.Cameras
+                .Where(c => c.AppUserId == _userContext.AppUserId)
+                .Select(c => c.Id)
                 .ToListAsync();
+
+            if (!userCameraIds.Any())
+                return null;
+
+            var events = await _context.CameraEvents
+                .Where(e => userCameraIds.Contains(e.CameraId))
+                .OrderByDescending(e => e.Timestamp)
+                .Select(e => new CameraEventWithCameraIdDto
+                {
+                    Id = e.Id,
+                    CameraId = e.CameraId,
+                    MotionDetected = e.MotionDetected,
+                    Timestamp = e.Timestamp,
+                    Object = e.Object,
+                })
+                .ToListAsync();
+
+            return events;
         }
 
         public Task<IEnumerable<CameraEvent>> GetCameraEventsAsync(DateTimeOffset from, DateTimeOffset to)
@@ -38,10 +60,30 @@ namespace VisionHub.Api.Models.Cameras
             throw new NotImplementedException();
         }
 
-        public async Task<CameraEvent> GetLastCameraEventAsync(int cameraId)
+        public async Task<CameraEventWithCameraIdDto> GetLastCameraEventAsync()
         {
-            return await CameraEvents
-                .FirstOrDefaultAsync(e => e.CameraId == cameraId);
+            var userCameraIds = await _context.Cameras
+                .Where(c => c.AppUserId == _userContext.AppUserId)
+                .Select(c => c.Id)
+                .ToListAsync();
+
+            if (!userCameraIds.Any())
+                return null;
+
+            var lastEvent = await _context.CameraEvents
+                .Where(e => userCameraIds.Contains(e.CameraId))
+                .OrderByDescending(e => e.Timestamp)
+                .Select(e => new CameraEventWithCameraIdDto
+                {
+                    Id = e.Id,
+                    CameraId = e.CameraId,
+                    MotionDetected = e.MotionDetected,
+                    Timestamp = e.Timestamp,
+                    Object = e.Object,
+                })
+                .FirstOrDefaultAsync();
+
+            return lastEvent;
         }
     }
 }
