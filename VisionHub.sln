@@ -5,6 +5,8 @@ VisualStudioVersion = 17.0.31903.59
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisionHub.Api", "VisionHub.Api\VisionHub.Api.csproj", "{1823746C-A2C7-431C-B25C-3C3ECAF8997E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VisionHub.Api.Tests", "VisionHub.Api.Tests\VisionHub.Api.Tests.csproj", "{6817193A-7AF3-4BEC-964D-0E356D52960C}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{1823746C-A2C7-431C-B25C-3C3ECAF8997E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{1823746C-A2C7-431C-B25C-3C3ECAF8997E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{1823746C-A2C7-431C-B25C-3C3ECAF8997E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{6817193A-7AF3-4BEC-964D-0E356D52960C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{6817193A-7AF3-4BEC-964D-0E356D52960C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{6817193A-7AF3-4BEC-964D-0E356D52960C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{6817193A-7AF3-4BEC-964D-0E356D52960C}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal
