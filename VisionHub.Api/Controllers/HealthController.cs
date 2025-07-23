@@ -1,7 +1,5 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Http;
-using System.Threading.Tasks;
 using VisionHub.Api.Models.Cameras;
 
 namespace VisionHub.Api.Controllers
@@ -44,7 +42,7 @@ namespace VisionHub.Api.Controllers
             var cameras = _cameraRepository.Cameras.ToList();
             var httpClient = _httpClientFactory.CreateClient();
 
-            var cameraStatuses = new List<object>();
+            var cameraStatuses = new List<CameraHealthStatusDto>();
 
             foreach (var camera in cameras)
             {
@@ -52,18 +50,26 @@ namespace VisionHub.Api.Controllers
                 var request = new HttpRequestMessage(HttpMethod.Get, statusUrl);
                 request.Headers.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", camera.Token);
 
+                bool isConnected;
                 try
                 {
                     var response = await httpClient.SendAsync(request);
-                    cameraStatuses.Add(new { camera.Id, camera.Name, Connected = response.IsSuccessStatusCode });
+                    isConnected = response.IsSuccessStatusCode;
                 }
                 catch
                 {
-                    cameraStatuses.Add(new { camera.Id, camera.Name, Connected = false });
+                    isConnected = false;
                 }
+
+                cameraStatuses.Add(new CameraHealthStatusDto
+                {
+                    Id = camera.Id,
+                    Name = camera.Name,
+                    Connected = isConnected
+                });
             }
 
-            return Ok(new
+            return Ok(new HealthStatusDto
             {
                 DatabaseConnected = dbConnected,
                 CameraConnections = cameraStatuses
