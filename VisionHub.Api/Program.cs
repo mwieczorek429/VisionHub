@@ -6,6 +6,9 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Microsoft.OpenApi.Models;
+using Serilog;
+using Serilog.Sinks.Elasticsearch;
+using VisionHub.Api.Middleware;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -86,9 +89,21 @@ builder.Services.AddScoped<IAppUserContextService,  AppUserContextService>();
 
 builder.Services.AddHostedService<CameraWsBackgroundService>();
 
+Log.Logger = new LoggerConfiguration()
+    .Enrich.FromLogContext()
+    .WriteTo.Elasticsearch(new ElasticsearchSinkOptions(new Uri("http://localhost:9200")) 
+    {
+        AutoRegisterTemplate = true,
+        IndexFormat = "visionhub-logs-{0:yyyy.MM.dd}"
+    })
+    .WriteTo.Console()
+    .CreateLogger();
+
+builder.Host.UseSerilog();
+
 var app = builder.Build();
 
-// Configure the HTTP request pipeline.
+
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();
@@ -100,6 +115,8 @@ app.UseAuthorization();
 
 app.UseHttpsRedirection();
 app.MapControllers();
+app.UseMiddleware<ApiLoggingMiddleware>();
+
 
 app.Run();
 
