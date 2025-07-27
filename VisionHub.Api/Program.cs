@@ -101,6 +101,16 @@ Log.Logger = new LoggerConfiguration()
 
 builder.Host.UseSerilog();
 
+builder.WebHost.ConfigureKestrel(options =>
+{
+    options.ListenAnyIP(8080);
+    options.ListenAnyIP(8443, listenOptions =>
+    {
+        listenOptions.UseHttps();
+    });
+});
+
+
 var app = builder.Build();
 
 
@@ -117,6 +127,11 @@ app.UseHttpsRedirection();
 app.MapControllers();
 app.UseMiddleware<ApiLoggingMiddleware>();
 
+using (var scope = app.Services.CreateScope())
+{
+    var db = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+    db.Database.Migrate();
+}
 
 app.Run();
 
