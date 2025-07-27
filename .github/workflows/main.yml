@@ -21,9 +21,9 @@ jobs:
   
       - name: Run dotnet restore
         run: dotnet restore VisionHub.sln
-
+        
       - name: Build solution
-        run: dotnet build --configuration Release --no-restore
+        run: dotnet build VisionHub.sln --configuration Release --no-restore
 
       - name: Run tests
         run: dotnet test --configuration Release --no-build --logger "console;verbosity=detailed"
