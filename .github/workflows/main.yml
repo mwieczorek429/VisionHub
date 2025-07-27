@@ -18,9 +18,9 @@ jobs:
         uses: actions/setup-dotnet@v4
         with:
           dotnet-version: 8.0.x
-
-      - name: Restore dependencies
-        run: dotnet restore
+  
+      - name: Run dotnet restore
+        run: dotnet restore VisionHub.sln
 
       - name: Build solution
         run: dotnet build --configuration Release --no-restore
