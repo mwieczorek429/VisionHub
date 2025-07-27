@@ -27,4 +27,3 @@ jobs:
 
       - name: Test
         run: dotnet test ./VisionHub.Api.Tests/VisionHub.Api.Tests.csproj --configuration Release --no-build --logger "console;verbosity=detailed"
-
